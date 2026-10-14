@@ -1,0 +1,3 @@
+firmware_family,source_page,collection_method,verification_status
+ArduPilot,https://firmware.ardupilot.org/Copter/stable/,manual,user_reported_source_not_yet_byte_verified
+PX4,https://github.com/PX4/PX4-Autopilot/releases/tag/v1.17.0,manual,metadata_consistent_source_not_yet_byte_verified

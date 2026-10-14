@@ -1,0 +1,29 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables and secrets
+.env
+
+# Test and analysis artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local firmware datasets and extracted files
+data/*
+!data/README.md
+
+# Generated model files
+*.pkl
+*.joblib
+
+# Editor and operating system files
+.vscode/
+.DS_Store
+Thumbs.db
