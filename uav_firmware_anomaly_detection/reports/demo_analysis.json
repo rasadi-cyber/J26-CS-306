@@ -1,0 +1,379 @@
+{
+  "schema_version": "1.0",
+  "component": "uav_firmware_anomaly_detection",
+  "analysis_timestamp_utc": "2026-10-14T11:40:42.143206+00:00",
+  "firmware": {
+    "file_name": "arducopter (10).apj",
+    "family": "ArduPilot",
+    "container_sha256": "64a8e2c2583aa3efb5736107655c25a873418d3c36f1e85fff7eb15788a2430a",
+    "payload_sha256": "7f4a01b79c9e25ed0ffff79f441fccb331bdf08edc267e5fb157ed49226e3cb1",
+    "main_image_bytes": 1546180,
+    "external_image_bytes": 0,
+    "metadata": {
+      "magic": "APJFWv1",
+      "board_id": 58,
+      "board_revision": 0,
+      "summary": "ARK_PI6X",
+      "description": "Firmware for a STM32H743xx board",
+      "git_identity": "92b0cd78",
+      "git_hash": null,
+      "version": "0.1"
+    }
+  },
+  "result": {
+    "verdict": "normal",
+    "anomaly_score": 0.3074076619258782,
+    "decision_threshold": 0.333895942887688,
+    "score_definition": "Negative One-Class SVM decision_function; larger means more anomalous",
+    "decision_rule": "anomalous when anomaly_score > threshold",
+    "validation_percentile": 85.71428571428571,
+    "percentile_definition": "Rank against candidate-clean family validation scores; not a probability of compromise"
+  },
+  "model": {
+    "model_id": "ocsvm-66e6524bb254",
+    "model_file_sha256": "66e6524bb254b6d945fbb329c45078ccdf3f28a70226e95f4921d26def3f388d",
+    "family": "ArduPilot",
+    "representation": "combined",
+    "experiment": "bounded_validation_tuning",
+    "training_dataset_sha256": "d32b41a57e0d0ccf231bf17345b87c78dc89379171f3cfdfc5f4640e2a8144f7",
+    "candidate_features": 464,
+    "retained_features": 433
+  },
+  "explanation": {
+    "decision_basis": "The saved model score was compared with its validation-derived threshold.",
+    "method": "Individual feature deviations from training medians. These are supporting observations, not causal model attribution.",
+    "supporting_feature_deviations": [
+      {
+        "feature": "byte_frequency_203",
+        "observed": 0.001212019299176034,
+        "training_median": 0.00083440700857835,
+        "training_standard_deviation": 8.269430042285102e-05,
+        "standardized_deviation_from_median": 4.566364171010484,
+        "direction": "higher"
+      },
+      {
+        "feature": "window_entropy_max",
+        "observed": 7.758677807277662,
+        "training_median": 7.951109786279227,
+        "training_standard_deviation": 0.04382202377160242,
+        "standardized_deviation_from_median": -4.391216161182064,
+        "direction": "lower"
+      },
+      {
+        "feature": "byte_frequency_036",
+        "observed": 0.004449675975630263,
+        "training_median": 0.0022783414290410498,
+        "training_standard_deviation": 0.000658566942537761,
+        "standardized_deviation_from_median": 3.29705973127358,
+        "direction": "higher"
+      },
+      {
+        "feature": "byte_frequency_206",
+        "observed": 0.0010322213455095785,
+        "training_median": 0.0006123723618309,
+        "training_standard_deviation": 0.000127687392919423,
+        "standardized_deviation_from_median": 3.288100524878159,
+        "direction": "higher"
+      },
+      {
+        "feature": "byte_frequency_024",
+        "observed": 0.005829204879121448,
+        "training_median": 0.00401910007182175,
+        "training_standard_deviation": 0.0006160574244329724,
+        "standardized_deviation_from_median": 2.9382079259344085,
+        "direction": "higher"
+      },
+      {
+        "feature": "byte_frequency_124",
+        "observed": 0.0010238135275323702,
+        "training_median": 0.0012477570670514,
+        "training_standard_deviation": 8.122734188964832e-05,
+        "standardized_deviation_from_median": -2.756997019836856,
+        "direction": "lower"
+      },
+      {
+        "feature": "hashed_bigram_018",
+        "observed": 0.008830801608351944,
+        "training_median": 0.00678984021331,
+        "training_standard_deviation": 0.0007505920313746465,
+        "standardized_deviation_from_median": 2.719135442064439,
+        "direction": "higher"
+      },
+      {
+        "feature": "hashed_bigram_126",
+        "observed": 0.006204326924631624,
+        "training_median": 0.0058444417884829,
+        "training_standard_deviation": 0.00014157550472630487,
+        "standardized_deviation_from_median": 2.5420014348135824,
+        "direction": "higher"
+      }
+    ],
+    "inactive_feature_changes": []
+  },
+  "uav_evidence": {
+    "flight_control": [
+      {
+        "marker": "attitude_parameters",
+        "count": 10,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1343544,
+            "matched_text": "ATC_RAT_YAW_FILT"
+          },
+          {
+            "region": "main",
+            "offset": 1343763,
+            "matched_text": "ATC_INPUT_TC"
+          },
+          {
+            "region": "main",
+            "offset": 1343776,
+            "matched_text": "ATC_RAT_RLL_FLTD"
+          }
+        ]
+      },
+      {
+        "marker": "position_parameters",
+        "count": 12,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1343561,
+            "matched_text": "PSC_VELXY_P"
+          },
+          {
+            "region": "main",
+            "offset": 1343573,
+            "matched_text": "PSC_VELXY_I"
+          },
+          {
+            "region": "main",
+            "offset": 1343585,
+            "matched_text": "PSC_VELXY_IMAX"
+          }
+        ]
+      },
+      {
+        "marker": "motor_parameters",
+        "count": 1,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1440173,
+            "matched_text": "MOT_TLT"
+          }
+        ]
+      }
+    ],
+    "navigation_rtl": [
+      {
+        "marker": "rtl_parameters",
+        "count": 10,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1324242,
+            "matched_text": "RTL_ALT_TYPE"
+          },
+          {
+            "region": "main",
+            "offset": 1324310,
+            "matched_text": "RTL_ALT"
+          },
+          {
+            "region": "main",
+            "offset": 1344717,
+            "matched_text": "RTL_OPTIONS"
+          }
+        ]
+      },
+      {
+        "marker": "smart_rtl_parameters",
+        "count": 2,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1439325,
+            "matched_text": "SRTL_RTL"
+          },
+          {
+            "region": "main",
+            "offset": 1439334,
+            "matched_text": "SRTL_LAND"
+          }
+        ]
+      },
+      {
+        "marker": "mission_parameters",
+        "count": 2,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1439602,
+            "matched_text": "MIS_RST"
+          },
+          {
+            "region": "main",
+            "offset": 1457455,
+            "matched_text": "MIS_ITEMS"
+          }
+        ]
+      }
+    ],
+    "arming_failsafe": [
+      {
+        "marker": "arming_parameters",
+        "count": 1,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1344207,
+            "matched_text": "ARMING_CHECK"
+          }
+        ]
+      },
+      {
+        "marker": "prearm_messages",
+        "count": 1,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1457528,
+            "matched_text": "PreArm"
+          }
+        ]
+      },
+      {
+        "marker": "flight_failsafe_parameters",
+        "count": 8,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1324094,
+            "matched_text": "FS_THR_VALUE"
+          },
+          {
+            "region": "main",
+            "offset": 1324107,
+            "matched_text": "FS_GCS_ENABLE"
+          },
+          {
+            "region": "main",
+            "offset": 1344437,
+            "matched_text": "FS_EKF_FILT"
+          }
+        ]
+      }
+    ],
+    "geofence": [
+      {
+        "marker": "fence_parameters",
+        "count": 12,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1416960,
+            "matched_text": "FENCE_FETCH_POINT"
+          },
+          {
+            "region": "main",
+            "offset": 1434067,
+            "matched_text": "FENCE_RADIUS"
+          },
+          {
+            "region": "main",
+            "offset": 1434093,
+            "matched_text": "FENCE_MARGIN"
+          }
+        ]
+      },
+      {
+        "marker": "geofence_references",
+        "count": 1,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1449106,
+            "matched_text": "Geofence"
+          }
+        ]
+      },
+      {
+        "marker": "fence_breach_messages",
+        "count": 1,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1350545,
+            "matched_text": "Fence breach"
+          }
+        ]
+      },
+      {
+        "marker": "fence_recovery_messages",
+        "count": 1,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1350707,
+            "matched_text": "fence recovery"
+          }
+        ]
+      }
+    ],
+    "state_estimation": [
+      {
+        "marker": "ek3_parameters",
+        "count": 15,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1389124,
+            "matched_text": "EK3_MAG_CAL"
+          },
+          {
+            "region": "main",
+            "offset": 1389140,
+            "matched_text": "EK3_SRC1_YAW"
+          },
+          {
+            "region": "main",
+            "offset": 1389236,
+            "matched_text": "EK3_GPS_TYPE"
+          }
+        ]
+      },
+      {
+        "marker": "ekf_diagnostics",
+        "count": 5,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1324479,
+            "matched_text": "EKF compass"
+          },
+          {
+            "region": "main",
+            "offset": 1324500,
+            "matched_text": "EKF position"
+          },
+          {
+            "region": "main",
+            "offset": 1324522,
+            "matched_text": "EKF velocity"
+          }
+        ]
+      }
+    ]
+  },
+  "warnings": [
+    "Exploratory model; detection performance remains limited.",
+    "A normal result does not establish authenticity or absence of malware.",
+    "An anomaly indicates statistical deviation, not proof of maliciousness.",
+    "UAV marker presence does not establish enabled settings or runtime behaviour.",
+    "New boards, releases and build configurations may differ legitimately.",
+    "Training provenance is not verified for every candidate sample."
+  ],
+  "analysis_seconds": 10.260978499999965
+}

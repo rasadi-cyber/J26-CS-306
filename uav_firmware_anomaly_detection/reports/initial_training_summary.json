@@ -1,0 +1,44 @@
+{
+  "dataset_sha256": "d32b41a57e0d0ccf231bf17345b87c78dc89379171f3cfdfc5f4640e2a8144f7",
+  "sklearn_version": "1.9.1",
+  "test_set_used": false,
+  "threshold_policy": "95th percentile of validation scores",
+  "models": {
+    "one_class_svm": {
+      "training_samples": 154,
+      "validation_samples": 48,
+      "candidate_features": 464,
+      "retained_features": 460,
+      "threshold": 0.188327277383523,
+      "validation_flagged": 3,
+      "validation_by_family": {
+        "ArduPilot": {
+          "samples": 42,
+          "flagged": 3
+        },
+        "PX4": {
+          "samples": 6,
+          "flagged": 0
+        }
+      }
+    },
+    "isolation_forest": {
+      "training_samples": 154,
+      "validation_samples": 48,
+      "candidate_features": 464,
+      "retained_features": 460,
+      "threshold": 0.06726763157687557,
+      "validation_flagged": 3,
+      "validation_by_family": {
+        "ArduPilot": {
+          "samples": 42,
+          "flagged": 0
+        },
+        "PX4": {
+          "samples": 6,
+          "flagged": 3
+        }
+      }
+    }
+  }
+}
