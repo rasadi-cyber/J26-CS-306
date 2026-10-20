@@ -1,9 +1,11 @@
 from pathlib import Path
 from datetime import datetime, timezone
+from xml.etree.ElementTree import ParseError
 import argparse
 import hashlib
 import json
 import time
+import zlib
 
 import joblib
 import numpy as np
@@ -11,6 +13,7 @@ import pandas as pd
 
 from feature_pipeline import extract_firmware_features
 from firmware_loader import load_firmware
+from px4_consistency import check_px4_consistency
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -23,8 +26,24 @@ def analyze_firmware(file_path, model_directory=MODEL_DIR):
 
     firmware = load_firmware(path)
     features, uav_evidence = extract_firmware_features(
-        firmware["main_image"], firmware["external_image"]
+        firmware["main_image"],
+        firmware["external_image"],
     )
+
+    container = json.loads(path.read_text(encoding="utf-8-sig"))
+
+    try:
+        consistency = check_px4_consistency(
+            container,
+            firmware["main_image"],
+            firmware["external_image"],
+        )
+    except (ValueError, TypeError, zlib.error, ParseError) as error:
+        consistency = {
+            "status": "invalid_metadata",
+            "reason": str(error),
+            "groups": {},
+        }
 
     family = {
         "APJFWv1": "ArduPilot",
@@ -32,11 +51,14 @@ def analyze_firmware(file_path, model_directory=MODEL_DIR):
     }[firmware["metadata"]["magic"]]
 
     model_path = (
-        Path(model_directory) / f"ocsvm_tuned_{family}_combined.joblib"
+        Path(model_directory)
+        / f"ocsvm_tuned_{family}_combined.joblib"
     )
 
     if not model_path.is_file():
-        raise ValueError(f"No saved combined model available for {family}")
+        raise ValueError(
+            f"No saved combined model available for {family}"
+        )
 
     # Load only trusted model files produced by this project.
     bundle = joblib.load(model_path)
@@ -47,14 +69,18 @@ def analyze_firmware(file_path, model_directory=MODEL_DIR):
     names = bundle["feature_names"]
 
     if set(features) != set(names):
-        raise ValueError("Extracted features do not match the model schema")
+        raise ValueError(
+            "Extracted features do not match the model schema"
+        )
 
     frame = pd.DataFrame(
         [[features[name] for name in names]],
         columns=names,
     )
 
-    score = float(-bundle["pipeline"].decision_function(frame)[0])
+    score = float(
+        -bundle["pipeline"].decision_function(frame)[0]
+    )
     threshold = float(bundle["threshold"])
     verdict = "anomalous" if score > threshold else "normal"
 
@@ -68,10 +94,17 @@ def analyze_firmware(file_path, model_directory=MODEL_DIR):
     for index, name in enumerate(names):
         observed = float(features[name])
         median = float(bundle["training_medians"][name])
-        spread = float(bundle["training_standard_deviations"][name])
+        spread = float(
+            bundle["training_standard_deviations"][name]
+        )
 
         if not retained[index]:
-            if not np.isclose(observed, median, rtol=1e-9, atol=1e-12):
+            if not np.isclose(
+                observed,
+                median,
+                rtol=1e-9,
+                atol=1e-12,
+            ):
                 inactive_changes.append(name)
             continue
 
@@ -97,12 +130,14 @@ def analyze_firmware(file_path, model_directory=MODEL_DIR):
     )
 
     supporting_deviations = [
-        item for item in deviations
+        item
+        for item in deviations
         if abs(item["standardized_deviation_from_median"]) >= 2
     ][:8]
 
     calibration_scores = np.asarray(
-        bundle["validation_scores"], dtype=float
+        bundle["validation_scores"],
+        dtype=float,
     )
     percentile = float(
         100 * np.mean(calibration_scores <= score)
@@ -123,19 +158,36 @@ def analyze_firmware(file_path, model_directory=MODEL_DIR):
             "from model scoring."
         )
 
-    model_hash = hashlib.sha256(model_path.read_bytes()).hexdigest()
+    if consistency["status"] == "mismatch":
+        warnings.append(
+            "PX4 parameter metadata and binary names disagree. "
+            "This finding is separate from the ML score and requires review."
+        )
+    elif consistency["status"] == "invalid_metadata":
+        warnings.append(
+            "PX4 metadata could not be validated. "
+            "The consistency check is unavailable; the ML result is separate."
+        )
+
+    model_hash = hashlib.sha256(
+        model_path.read_bytes()
+    ).hexdigest()
 
     return {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "component": "uav_firmware_anomaly_detection",
-        "analysis_timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "analysis_timestamp_utc": datetime.now(
+            timezone.utc
+        ).isoformat(),
         "firmware": {
             "file_name": path.name,
             "family": family,
             "container_sha256": firmware["container_sha256"],
             "payload_sha256": firmware["payload_sha256"],
             "main_image_bytes": len(firmware["main_image"]),
-            "external_image_bytes": len(firmware["external_image"]),
+            "external_image_bytes": len(
+                firmware["external_image"]
+            ),
             "metadata": firmware["metadata"],
         },
         "result": {
@@ -146,7 +198,9 @@ def analyze_firmware(file_path, model_directory=MODEL_DIR):
                 "Negative One-Class SVM decision_function; "
                 "larger means more anomalous"
             ),
-            "decision_rule": "anomalous when anomaly_score > threshold",
+            "decision_rule": (
+                "anomalous when anomaly_score > threshold"
+            ),
             "validation_percentile": percentile,
             "percentile_definition": (
                 "Rank against candidate-clean family validation scores; "
@@ -159,7 +213,9 @@ def analyze_firmware(file_path, model_directory=MODEL_DIR):
             "family": family,
             "representation": bundle["representation"],
             "experiment": bundle["experiment"],
-            "training_dataset_sha256": bundle["dataset_sha256"],
+            "training_dataset_sha256": bundle[
+                "dataset_sha256"
+            ],
             "candidate_features": len(names),
             "retained_features": int(retained.sum()),
         },
@@ -176,6 +232,7 @@ def analyze_firmware(file_path, model_directory=MODEL_DIR):
             "inactive_feature_changes": inactive_changes,
         },
         "uav_evidence": uav_evidence,
+        "px4_parameter_name_consistency": consistency,
         "warnings": warnings,
         "analysis_seconds": time.perf_counter() - started,
     }
@@ -193,9 +250,12 @@ def main():
         raise ValueError("Report must not overwrite the firmware")
 
     if output.exists():
-        raise ValueError("Report already exists; choose a new output name")
+        raise ValueError(
+            "Report already exists; choose a new output name"
+        )
 
     report = analyze_firmware(args.firmware)
+
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(
         json.dumps(report, indent=2, allow_nan=False),
@@ -210,6 +270,10 @@ def main():
     print(
         "Supporting feature deviations:",
         len(report["explanation"]["supporting_feature_deviations"]),
+    )
+    print(
+        "PX4 parameter-name consistency:",
+        report["px4_parameter_name_consistency"]["status"],
     )
     print("Report saved to:", output)
 
