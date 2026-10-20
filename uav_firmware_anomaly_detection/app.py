@@ -13,6 +13,7 @@ COMPONENT_ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(COMPONENT_ROOT / "src"))
 
 from analyze_firmware import analyze_firmware
+from model_routing import UnsupportedVehicleError
 from pdf_report import generate_pdf_report
 
 
@@ -33,6 +34,7 @@ st.info(
 with st.sidebar:
     st.header("Analysis")
     st.write("Supported containers: APJ and PX4")
+    st.write("Supported vehicles: ArduCopter, ArduPlane, PX4")
     st.write("Maximum file size: 64 MiB")
     st.write("Firmware is analyzed without execution.")
     st.write("Uploads use saved models; they do not retrain them.")
@@ -79,6 +81,9 @@ if st.button(
                 report["firmware"]["file_name"] = uploaded.name
                 st.session_state["analysis_report"] = report
 
+        except UnsupportedVehicleError as error:
+            st.error(str(error))
+
         except Exception:
             traceback.print_exc()
             st.error(
@@ -97,25 +102,70 @@ if report is not None:
     else:
         st.success("Normal: within this model's learned baseline.")
 
-    first, second, third = st.columns(3)
+    vehicle = report["firmware"].get("vehicle", {})
+
+    first, second, third, fourth = st.columns(4)
 
     first.metric("Firmware family", report["firmware"]["family"])
-    second.metric("Anomaly score", f"{result['anomaly_score']:.6f}")
-    third.metric(
+    second.metric("Vehicle type", vehicle.get("vehicle", "not recorded"))
+    third.metric("Anomaly score", f"{result['anomaly_score']:.6f}")
+    fourth.metric(
         "Decision threshold",
         f"{result['decision_threshold']:.6f}",
     )
 
     st.write(
         "The firmware is flagged when its anomaly score exceeds the threshold. "
-        "Scores are not probabilities and should not be compared across families."
+        "Scores are not probabilities and should not be compared across models."
     )
 
-    context_tab, deviations_tab, evidence_tab = st.tabs([
+    reasoning_tab, context_tab, deviations_tab, evidence_tab = st.tabs([
+        "Why this result",
         "Firmware and model",
         "Supporting deviations",
         "UAV evidence",
     ])
+
+    with reasoning_tab:
+        reasoning = report["explanation"].get("uav_reasoning")
+
+        if reasoning:
+            st.write(reasoning["summary"])
+            st.caption(
+                "Compared with the flight-stack content that is typical "
+                "for this model scope in the training firmware."
+            )
+            st.dataframe(
+                pd.DataFrame([
+                    {
+                        "content group": item["group"]
+                        .replace("_", " ").title().replace("Rtl", "RTL"),
+                        "observed coverage":
+                            round(item["observed_marker_coverage"], 2),
+                        "typical coverage":
+                            round(item["typical_marker_coverage"], 2),
+                        "expected content not found":
+                            ", ".join(item["missing_markers"]),
+                        "unusual extra content":
+                            ", ".join(item["unexpected_markers"]),
+                    }
+                    for item in reasoning["groups"]
+                ]),
+                hide_index=True,
+            )
+
+        baseline = report.get("baseline_comparison")
+
+        if baseline:
+            agreement = (
+                "agrees with" if baseline["agrees_with_main_model"]
+                else "differs from"
+            )
+            st.write(
+                f"Baseline check: the {baseline['model']} verdict is "
+                f"**{baseline['verdict']}** and {agreement} the main "
+                "One-Class SVM verdict."
+            )
 
     with context_tab:
         st.write("Filename:", report["firmware"]["file_name"])

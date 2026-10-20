@@ -1,0 +1,13 @@
+scope,model,clean_test_samples,clean_flag_rate,detect_byte_level,detect_uav_targeted,roc_auc_all_modified
+ArduPilot/multirotor,UAV-only One-Class SVM (main),114,0.10526315789473684,0.004901960784313725,1.0,0.7960218528778086
+ArduPilot/multirotor,UAV-only Isolation Forest (baseline),114,0.15789473684210525,0.0,0.3888888888888889,0.6922899353647276
+ArduPilot/multirotor,Generic bytes One-Class SVM,114,0.02631578947368421,0.018018018018018018,0.009009009009009009,0.5075869498307171
+ArduPilot/fixed_wing,UAV-only One-Class SVM (main),88,0.11363636363636363,0.019230769230769232,0.9868421052631579,0.7920797300147648
+ArduPilot/fixed_wing,UAV-only Isolation Forest (baseline),88,0.03409090909090909,0.0058823529411764705,0.23636363636363636,0.6801637312803206
+ArduPilot/fixed_wing,Generic bytes One-Class SVM,88,0.0,0.0,0.0,0.5224899810166632
+ArduPilot/helicopter (general ArduPilot model),UAV-only One-Class SVM (main),15,0.06666666666666667,0.0,1.0,0.8064444444444444
+ArduPilot/helicopter (general ArduPilot model),UAV-only Isolation Forest (baseline),15,0.0,0.0,0.2222222222222222,0.7259999999999999
+ArduPilot/helicopter (general ArduPilot model),Generic bytes One-Class SVM,15,0.06666666666666667,0.0,0.0,0.5226666666666666
+PX4/all,UAV-only One-Class SVM (main),7,0.0,0.0,1.0,0.8051020408163265
+PX4/all,UAV-only Isolation Forest (baseline),7,0.0,0.0,0.0,0.6704081632653061
+PX4/all,Generic bytes One-Class SVM,7,0.7142857142857143,0.75,0.08333333333333333,0.6081632653061224

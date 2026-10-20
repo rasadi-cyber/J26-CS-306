@@ -1,45 +1,72 @@
 # UAV Firmware Anomaly Detection Using Machine Learning
 
-## Project Overview
+Component of the group project **Smart Drone Forensics and Cyber Investigation System Using Machine Learning**.
 
-This component focuses on identifying potentially suspicious modifications in UAV firmware using static analysis and machine learning techniques.
+It screens UAV flight-controller firmware (ArduPilot `.apj`, PX4 `.px4`) **statically** (never executed) and reports an anomaly score, the vehicle type, and UAV-specific reasons such as missing geofence, failsafe or return-to-launch content.
 
-It is part of the group project, **Smart Drone Forensics and Cyber Investigation System Using Machine Learning**.
+## What makes it UAV-specific
 
-## Objectives
+- Reads the vehicle type from the firmware (ArduCopter, ArduPlane, helicopter, PX4) and uses a model trained for that vehicle class. Non-aerial builds (Rover, Sub, Tracker, Blimp) are refused.
+- 60 flight-stack marker features: presence and density of flight-control, navigation/RTL, arming/failsafe, geofence and state-estimation parameter and message names.
+- Explanations are phrased in flight-safety terms ("geofence content not found"), not raw byte statistics.
 
-- Collect and validate PX4 and ArduPilot firmware samples.
-- Extract static features from firmware files.
-- Use a One-Class Support Vector Machine (One-Class SVM) to identify unusual firmware samples.
-- Compare the results with an Isolation Forest baseline.
-- Present detection results to support further forensic investigation.
+## Method
 
-## Planned Workflow
+- **Main model:** One-Class SVM (RBF) on the UAV marker features, one model per vehicle class (ArduPilot multirotor, ArduPilot fixed-wing, ArduPilot general, PX4). Pipeline: variance filter, standard scaler, model.
+- **Baseline:** Isolation Forest on the same features.
+- **Also compared:** generic byte/entropy/string features (404 features) and the combined 464-feature set.
+- **Data:** 701 unique firmware images (ArduPilot Copter/Plane releases 4.0.x to 4.7.x from the official firmware server, plus PX4 v1.15 to v1.17). Split by board group so no board appears in two splits: 357 train, 120 validation, 224 test. Thresholds are the 95th percentile of clean validation scores.
 
-1. Firmware file intake and validation.
-2. SHA-256 hash calculation and basic metadata collection.
-3. Static feature extraction.
-4. Feature preprocessing and anomaly detection.
-5. Presentation of results and supporting information.
+## Results
 
-## Technologies
+Controlled stress tests on the reserved **test split** (used once, frozen models; `reports/v2/final_test_summary.csv`):
 
-- Python
-- scikit-learn
-- NumPy
-- pandas
-- Python standard libraries for file handling and hashing
+| Scope | Clean flagged | Byte-level edits detected | Safety-content removal detected | Isolation Forest baseline (removal) |
+|---|---|---|---|---|
+| ArduPilot multirotor (114 clean) | 10.5% | 0.5% | 100% | 38.9% |
+| ArduPilot fixed-wing (88 clean) | 11.4% | 1.9% | 98.7% | 23.6% |
+| ArduPilot helicopter (15 clean, general model) | 6.7% | 0.0% | 100% | 22.2% |
+| PX4 (7 clean) | 0.0% | 0.0% | 100% | 0.0% |
 
-## Project Structure
+The generic byte-feature model detected essentially none of the safety-content removals (0 to 1% for ArduPilot).
 
-- `data/` — Dataset storage or instructions for accessing the dataset.
-- `src/` — Source code for firmware analysis and anomaly detection.
-- `tests/` — Tests for the implemented functions.
+## Limitations
 
-## Development Status
+- The "modified" firmware is **synthetic** (byte edits and zeroed flight-safety marker names). Detecting removal of marker content is largely by construction. This is not evidence against real attackers.
+- Small generic byte edits in ArduPilot firmware are **not** detected.
+- On unseen test firmware about 10% of clean ArduPilot builds were flagged, double the 5% target. Legitimate builds may omit features, so an alert needs investigation.
+- PX4 has few samples (31 images, 7 clean test); treat PX4 results as indicative only.
+- Helicopter builds had no validation samples; they use the general ArduPilot model.
+- Not a malware detector and not proof of authenticity or tampering.
 
-Initial project setup is in progress. Implementation and testing will be documented as development proceeds.
+## Setup and use
 
-## Important Note
+```powershell
+python -m venv .venv
+.venv\Scripts\python.exe -m pip install -r requirements.txt pytest
+.venv\Scripts\python.exe -m pytest tests -q
+.venv\Scripts\python.exe -m streamlit run app.py
+```
 
-An anomaly detection result indicates that a firmware sample differs from the learned baseline. It does not, by itself, prove that the firmware is malicious.
+Command line:
+
+```powershell
+python src\analyze_firmware.py <firmware.apj|.px4> --output reports\result.json
+```
+
+Demo file: `demo\copter_safety_content_removed.apj` (Copter 4.7.2 with safety markers zeroed).
+
+Model files (`models/`) and raw firmware (`data/raw/`) are git-ignored. Rebuild with:
+
+1. `src\build_feature_dataset_v2.py`
+2. `src\prepare_splits_v2.py` (fixed splits, seed 42)
+3. `src\build_stress_v2.py` (validation stress samples)
+4. `src\train_eval_v2.py` (trains and selects on validation only)
+5. `src\final_test_v2.py` (run once on the test split)
+
+## Structure
+
+- `src/` feature extraction, training, analysis, vehicle routing (`model_routing.py`), UAV reasoning (`uav_reasoning.py`), PDF report
+- `app.py` Streamlit interface
+- `reports/v2/` split, validation and final test results
+- `tests/` unit tests

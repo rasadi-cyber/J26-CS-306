@@ -70,6 +70,11 @@ def generate_pdf_report(report):
         ["Field", "Value"],
         ["Filename", firmware["file_name"]],
         ["Family", firmware["family"]],
+        [
+            "Vehicle type",
+            firmware.get("vehicle", {}).get("vehicle", "not recorded"),
+        ],
+        ["Model scope", model.get("scope", "not recorded")],
         ["Verdict", result["verdict"].upper()],
         ["Anomaly score", f"{result['anomaly_score']:.9g}"],
         ["Decision threshold", f"{result['decision_threshold']:.9g}"],
@@ -84,6 +89,15 @@ def generate_pdf_report(report):
             f"{model['candidate_features']} / {model['retained_features']}",
         ],
     ]
+
+    baseline = report.get("baseline_comparison")
+    if baseline:
+        summary_rows.append([
+            "Isolation Forest baseline",
+            f"{baseline['verdict'].upper()} "
+            f"(score {baseline['anomaly_score']:.6g}, "
+            f"threshold {baseline['decision_threshold']:.6g})",
+        ])
 
     story.append(table(summary_rows, [5 * cm, 12.4 * cm]))
 
@@ -109,6 +123,38 @@ def generate_pdf_report(report):
         Spacer(1, 0.15 * cm),
         paragraph("Model-file SHA-256:"),
         paragraph(model["model_file_sha256"], "ReportCell"),
+    ])
+
+    reasoning = report["explanation"].get("uav_reasoning")
+    if reasoning:
+        story.extend([
+            paragraph("UAV-specific reasoning", "Heading2"),
+            paragraph(reasoning["summary"]),
+            Spacer(1, 0.2 * cm),
+        ])
+
+        rows = [["Content group", "Observed", "Typical", "Finding"]]
+        for item in reasoning["groups"]:
+            if item["missing_markers"]:
+                finding = "Expected content not found: " + ", ".join(
+                    item["missing_markers"]
+                )
+            elif item["unexpected_markers"]:
+                finding = "Unusual extra content: " + ", ".join(
+                    item["unexpected_markers"]
+                )
+            else:
+                finding = "As expected"
+            rows.append([
+                item["group"].replace("_", " ").title().replace("Rtl", "RTL"),
+                f"{item['observed_marker_coverage']:.2f}",
+                f"{item['typical_marker_coverage']:.2f}",
+                finding,
+            ])
+        story.append(table(rows, [4 * cm, 2 * cm, 2 * cm, 9.4 * cm]))
+        story.append(Spacer(1, 0.2 * cm))
+
+    story.extend([
         paragraph("Supporting feature observations", "Heading2"),
         paragraph(report["explanation"]["method"]),
         Spacer(1, 0.2 * cm),

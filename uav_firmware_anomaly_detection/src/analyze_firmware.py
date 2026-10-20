@@ -13,11 +13,34 @@ import pandas as pd
 
 from feature_pipeline import extract_firmware_features
 from firmware_loader import load_firmware
+from model_routing import detect_vehicle, model_paths
 from px4_consistency import check_px4_consistency
+from uav_reasoning import explain_uav_markers
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-MODEL_DIR = PROJECT_ROOT / "models"
+MODEL_DIR = PROJECT_ROOT / "models" / "v2"
+
+
+def score_with_bundle(bundle, features):
+    """Anomaly score (larger = more anomalous) and verdict for one model."""
+    names = bundle["feature_names"]
+
+    if not set(names) <= set(features):
+        raise ValueError(
+            "Extracted features do not match the model schema"
+        )
+
+    frame = pd.DataFrame(
+        [[features[name] for name in names]],
+        columns=names,
+    )
+
+    score = float(-bundle["pipeline"].decision_function(frame)[0])
+    threshold = float(bundle["threshold"])
+    verdict = "anomalous" if score > threshold else "normal"
+
+    return score, threshold, verdict
 
 
 def analyze_firmware(file_path, model_directory=MODEL_DIR):
@@ -50,14 +73,19 @@ def analyze_firmware(file_path, model_directory=MODEL_DIR):
         "PX4FWv1": "PX4",
     }[firmware["metadata"]["magic"]]
 
-    model_path = (
-        Path(model_directory)
-        / f"ocsvm_tuned_{family}_combined.joblib"
+    # Raises UnsupportedVehicleError for non-aerial or uncovered builds.
+    vehicle = detect_vehicle(
+        family, firmware["main_image"], firmware["external_image"]
+    )
+
+    model_path, baseline_path = model_paths(
+        family, vehicle["model_scope"], model_directory
     )
 
     if not model_path.is_file():
         raise ValueError(
-            f"No saved combined model available for {family}"
+            f"No saved model available for {family} "
+            f"({vehicle['model_scope']})"
         )
 
     # Load only trusted model files produced by this project.
@@ -67,22 +95,7 @@ def analyze_firmware(file_path, model_directory=MODEL_DIR):
         raise ValueError("Firmware/model family mismatch")
 
     names = bundle["feature_names"]
-
-    if set(features) != set(names):
-        raise ValueError(
-            "Extracted features do not match the model schema"
-        )
-
-    frame = pd.DataFrame(
-        [[features[name] for name in names]],
-        columns=names,
-    )
-
-    score = float(
-        -bundle["pipeline"].decision_function(frame)[0]
-    )
-    threshold = float(bundle["threshold"])
-    verdict = "anomalous" if score > threshold else "normal"
+    score, threshold, verdict = score_with_bundle(bundle, features)
 
     retained = bundle["pipeline"].named_steps[
         "remove_constants"
@@ -143,14 +156,50 @@ def analyze_firmware(file_path, model_directory=MODEL_DIR):
         100 * np.mean(calibration_scores <= score)
     )
 
+    uav_reasoning = explain_uav_markers(
+        bundle["training_medians"], features
+    )
+
+    baseline = None
+    if baseline_path.is_file():
+        baseline_bundle = joblib.load(baseline_path)
+        base_score, base_threshold, base_verdict = score_with_bundle(
+            baseline_bundle, features
+        )
+        baseline = {
+            "model": "Isolation Forest (baseline)",
+            "anomaly_score": base_score,
+            "decision_threshold": base_threshold,
+            "verdict": base_verdict,
+            "agrees_with_main_model": base_verdict == verdict,
+        }
+
     warnings = [
-        "Exploratory model; detection performance remains limited.",
+        "Exploratory research model. Validation showed it detects removal "
+        "of flight-safety content (geofence, failsafe, return-to-launch, "
+        "flight-control and state-estimation markers); it does not "
+        "reliably detect small generic binary edits.",
+        "The threshold flags about 5% of clean validation firmware by "
+        "construction; the false-positive rate on unseen firmware is not "
+        "yet established.",
         "A normal result does not establish authenticity or absence of malware.",
         "An anomaly indicates statistical deviation, not proof of maliciousness.",
         "UAV marker presence does not establish enabled settings or runtime behaviour.",
-        "New boards, releases and build configurations may differ legitimately.",
-        "Training provenance is not verified for every candidate sample.",
+        "New boards, releases and build configurations may differ legitimately "
+        "(for example, a build may compile out a feature).",
+        "Training provenance is verified for the ArduPilot releases "
+        "downloaded from the official firmware server, not for every "
+        "candidate sample.",
     ]
+
+    if vehicle["note"]:
+        warnings.append(vehicle["note"])
+
+    if family == "PX4":
+        warnings.append(
+            "The PX4 model was calibrated on very few clean validation "
+            "samples; treat PX4 results as indicative only."
+        )
 
     if inactive_changes:
         warnings.append(
@@ -174,7 +223,7 @@ def analyze_firmware(file_path, model_directory=MODEL_DIR):
     ).hexdigest()
 
     return {
-        "schema_version": "1.1",
+        "schema_version": "1.2",
         "component": "uav_firmware_anomaly_detection",
         "analysis_timestamp_utc": datetime.now(
             timezone.utc
@@ -182,6 +231,7 @@ def analyze_firmware(file_path, model_directory=MODEL_DIR):
         "firmware": {
             "file_name": path.name,
             "family": family,
+            "vehicle": vehicle,
             "container_sha256": firmware["container_sha256"],
             "payload_sha256": firmware["payload_sha256"],
             "main_image_bytes": len(firmware["main_image"]),
@@ -203,14 +253,15 @@ def analyze_firmware(file_path, model_directory=MODEL_DIR):
             ),
             "validation_percentile": percentile,
             "percentile_definition": (
-                "Rank against candidate-clean family validation scores; "
-                "not a probability of compromise"
+                "Rank against candidate-clean validation scores for this "
+                "model scope; not a probability of compromise"
             ),
         },
         "model": {
             "model_id": f"ocsvm-{model_hash[:12]}",
             "model_file_sha256": model_hash,
             "family": family,
+            "scope": f"{family}/{vehicle['model_scope']}",
             "representation": bundle["representation"],
             "experiment": bundle["experiment"],
             "training_dataset_sha256": bundle[
@@ -218,7 +269,9 @@ def analyze_firmware(file_path, model_directory=MODEL_DIR):
             ],
             "candidate_features": len(names),
             "retained_features": int(retained.sum()),
+            "validation_clean_samples": int(len(calibration_scores)),
         },
+        "baseline_comparison": baseline,
         "explanation": {
             "decision_basis": (
                 "The saved model score was compared with its "
@@ -228,6 +281,7 @@ def analyze_firmware(file_path, model_directory=MODEL_DIR):
                 "Individual feature deviations from training medians. "
                 "These are supporting observations, not causal model attribution."
             ),
+            "uav_reasoning": uav_reasoning,
             "supporting_feature_deviations": supporting_deviations,
             "inactive_feature_changes": inactive_changes,
         },
@@ -264,9 +318,17 @@ def main():
 
     print("Firmware:", report["firmware"]["file_name"])
     print("Family:", report["firmware"]["family"])
+    print("Vehicle:", report["firmware"]["vehicle"]["vehicle"])
+    print("Model scope:", report["model"]["scope"])
     print("Verdict:", report["result"]["verdict"])
     print("Anomaly score:", report["result"]["anomaly_score"])
     print("Threshold:", report["result"]["decision_threshold"])
+    print("Reason:", report["explanation"]["uav_reasoning"]["summary"])
+    if report["baseline_comparison"]:
+        print(
+            "Isolation Forest baseline:",
+            report["baseline_comparison"]["verdict"],
+        )
     print(
         "Supporting feature deviations:",
         len(report["explanation"]["supporting_feature_deviations"]),

@@ -1,0 +1,303 @@
+{
+  "schema_version": "1.2",
+  "component": "uav_firmware_anomaly_detection",
+  "analysis_timestamp_utc": "2026-10-20T06:33:00.988196+00:00",
+  "firmware": {
+    "file_name": "copter_safety_content_removed.apj",
+    "family": "ArduPilot",
+    "vehicle": {
+      "vehicle": "ArduCopter",
+      "vehicle_class": "multirotor",
+      "release": "4.7.2",
+      "model_scope": "multirotor",
+      "note": ""
+    },
+    "container_sha256": "e9ab2eb67295eda741f60d97c20f550c1836062e99a4c3a7db1533bbaa0a4b2c",
+    "payload_sha256": "35bc4466afb202463805eea6b2ac9bdb7a74f92176db1cd340ecb1a2deffe45d",
+    "main_image_bytes": 1706056,
+    "external_image_bytes": 0,
+    "metadata": {
+      "magic": "APJFWv1",
+      "board_id": 1003,
+      "board_revision": 0,
+      "summary": "CubeBlack+",
+      "description": "Firmware for a STM32F427xx board",
+      "git_identity": "fb773567",
+      "git_hash": null,
+      "version": "0.1"
+    }
+  },
+  "result": {
+    "verdict": "anomalous",
+    "anomaly_score": 0.5384499070790749,
+    "decision_threshold": 0.0009428368410823389,
+    "score_definition": "Negative One-Class SVM decision_function; larger means more anomalous",
+    "decision_rule": "anomalous when anomaly_score > threshold",
+    "validation_percentile": 100.0,
+    "percentile_definition": "Rank against candidate-clean validation scores for this model scope; not a probability of compromise"
+  },
+  "model": {
+    "model_id": "ocsvm-f486dcda3b5d",
+    "model_file_sha256": "f486dcda3b5d1b8cc9670dd40f6d45309fb3f1864cd78e068c41f4ef8f1a8de4",
+    "family": "ArduPilot",
+    "scope": "ArduPilot/multirotor",
+    "representation": "uav",
+    "experiment": "v2_validation_selection",
+    "training_dataset_sha256": "32b23251371ea3022e7d175db0e6cf6060598f1b754f28d4c7168e8299e66f42",
+    "candidate_features": 60,
+    "retained_features": 33,
+    "validation_clean_samples": 74
+  },
+  "baseline_comparison": {
+    "model": "Isolation Forest (baseline)",
+    "anomaly_score": 0.17577936841823782,
+    "decision_threshold": 0.0775558786285645,
+    "verdict": "anomalous",
+    "agrees_with_main_model": true
+  },
+  "explanation": {
+    "decision_basis": "The saved model score was compared with its validation-derived threshold.",
+    "method": "Individual feature deviations from training medians. These are supporting observations, not causal model attribution.",
+    "uav_reasoning": {
+      "summary": "Differences from typical firmware - navigation rtl: expected content not found (rtl_parameters, smart_rtl_parameters, mission_parameters); arming failsafe: expected content not found (arming_parameters, prearm_messages, flight_failsafe_parameters); geofence: expected content not found (fence_parameters, geofence_references, fence_breach_messages, fence_recovery_messages).",
+      "groups": [
+        {
+          "group": "flight_control",
+          "observed_marker_coverage": 0.6,
+          "typical_marker_coverage": 0.6,
+          "missing_markers": [],
+          "unexpected_markers": [],
+          "status": "as_expected"
+        },
+        {
+          "group": "navigation_rtl",
+          "observed_marker_coverage": 0.0,
+          "typical_marker_coverage": 0.6,
+          "missing_markers": [
+            "rtl_parameters",
+            "smart_rtl_parameters",
+            "mission_parameters"
+          ],
+          "unexpected_markers": [],
+          "status": "expected_content_missing"
+        },
+        {
+          "group": "arming_failsafe",
+          "observed_marker_coverage": 0.0,
+          "typical_marker_coverage": 0.6,
+          "missing_markers": [
+            "arming_parameters",
+            "prearm_messages",
+            "flight_failsafe_parameters"
+          ],
+          "unexpected_markers": [],
+          "status": "expected_content_missing"
+        },
+        {
+          "group": "geofence",
+          "observed_marker_coverage": 0.0,
+          "typical_marker_coverage": 0.8,
+          "missing_markers": [
+            "fence_parameters",
+            "geofence_references",
+            "fence_breach_messages",
+            "fence_recovery_messages"
+          ],
+          "unexpected_markers": [],
+          "status": "expected_content_missing"
+        },
+        {
+          "group": "state_estimation",
+          "observed_marker_coverage": 0.4,
+          "typical_marker_coverage": 0.4,
+          "missing_markers": [],
+          "unexpected_markers": [],
+          "status": "as_expected"
+        }
+      ]
+    },
+    "supporting_feature_deviations": [
+      {
+        "feature": "uav_geofence_geofence_references_present",
+        "observed": 0.0,
+        "training_median": 1.0,
+        "training_standard_deviation": 0.06441510347391792,
+        "standardized_deviation_from_median": -15.524309456475628,
+        "direction": "lower"
+      },
+      {
+        "feature": "uav_arming_failsafe_coverage",
+        "observed": 0.0,
+        "training_median": 0.6,
+        "training_standard_deviation": 0.04526925618513689,
+        "standardized_deviation_from_median": -13.254028242615481,
+        "direction": "lower"
+      },
+      {
+        "feature": "uav_navigation_rtl_coverage",
+        "observed": 0.0,
+        "training_median": 0.6,
+        "training_standard_deviation": 0.07999999999999999,
+        "standardized_deviation_from_median": -7.500000000000001,
+        "direction": "lower"
+      },
+      {
+        "feature": "uav_arming_failsafe_arming_parameters_present",
+        "observed": 0.0,
+        "training_median": 1.0,
+        "training_standard_deviation": 0.22634628092568448,
+        "standardized_deviation_from_median": -4.4180094142051605,
+        "direction": "lower"
+      },
+      {
+        "feature": "uav_geofence_coverage",
+        "observed": 0.0,
+        "training_median": 0.8,
+        "training_standard_deviation": 0.18721459760273917,
+        "standardized_deviation_from_median": -4.273171057406343,
+        "direction": "lower"
+      },
+      {
+        "feature": "uav_arming_failsafe_matches_per_mib",
+        "observed": 0.0,
+        "training_median": 7.082810614146016,
+        "training_standard_deviation": 2.355136457070241,
+        "standardized_deviation_from_median": -3.007388634693779,
+        "direction": "lower"
+      },
+      {
+        "feature": "uav_navigation_rtl_matches_per_mib",
+        "observed": 0.0,
+        "training_median": 9.70664917256946,
+        "training_standard_deviation": 3.2308725833819096,
+        "standardized_deviation_from_median": -3.0043429203911978,
+        "direction": "lower"
+      },
+      {
+        "feature": "uav_arming_failsafe_prearm_messages_count_per_mib",
+        "observed": 0.0,
+        "training_median": 0.7400514986856062,
+        "training_standard_deviation": 0.2539639326419284,
+        "standardized_deviation_from_median": -2.914002358472798,
+        "direction": "lower"
+      }
+    ],
+    "inactive_feature_changes": [
+      "uav_navigation_rtl_rtl_parameters_present",
+      "uav_navigation_rtl_mission_parameters_present",
+      "uav_arming_failsafe_prearm_messages_present",
+      "uav_arming_failsafe_flight_failsafe_parameters_present",
+      "uav_geofence_fence_parameters_present"
+    ]
+  },
+  "uav_evidence": {
+    "flight_control": [
+      {
+        "marker": "attitude_parameters",
+        "count": 5,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1635180,
+            "matched_text": "ATC_ANGLE_MAX"
+          },
+          {
+            "region": "main",
+            "offset": 1635196,
+            "matched_text": "ATC_RATE_WPY_MAX"
+          },
+          {
+            "region": "main",
+            "offset": 1635216,
+            "matched_text": "ATC_ACC_Y_MAX"
+          }
+        ]
+      },
+      {
+        "marker": "position_parameters",
+        "count": 27,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1470428,
+            "matched_text": "PSC_NE_VEL_FLTE"
+          },
+          {
+            "region": "main",
+            "offset": 1636116,
+            "matched_text": "PSC_D_ACC_IMAX"
+          },
+          {
+            "region": "main",
+            "offset": 1636132,
+            "matched_text": "PSC_D_VEL_IMAX"
+          }
+        ]
+      },
+      {
+        "marker": "motor_parameters",
+        "count": 1,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1617988,
+            "matched_text": "MOT_TLT"
+          }
+        ]
+      }
+    ],
+    "navigation_rtl": [],
+    "arming_failsafe": [],
+    "geofence": [],
+    "state_estimation": [
+      {
+        "marker": "ek3_parameters",
+        "count": 15,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1519260,
+            "matched_text": "EK3_MAG_CAL"
+          },
+          {
+            "region": "main",
+            "offset": 1519276,
+            "matched_text": "EK3_SRC1_YAW"
+          },
+          {
+            "region": "main",
+            "offset": 1519392,
+            "matched_text": "EK3_GPS_TYPE"
+          }
+        ]
+      },
+      {
+        "marker": "ekf_diagnostics",
+        "count": 1,
+        "examples": [
+          {
+            "region": "main",
+            "offset": 1450536,
+            "matched_text": "EKF attitude"
+          }
+        ]
+      }
+    ]
+  },
+  "px4_parameter_name_consistency": {
+    "status": "not_applicable",
+    "reason": "This check requires a PX4 container.",
+    "groups": {}
+  },
+  "warnings": [
+    "Exploratory research model. Validation showed it detects removal of flight-safety content (geofence, failsafe, return-to-launch, flight-control and state-estimation markers); it does not reliably detect small generic binary edits.",
+    "The threshold flags about 5% of clean validation firmware by construction; the false-positive rate on unseen firmware is not yet established.",
+    "A normal result does not establish authenticity or absence of malware.",
+    "An anomaly indicates statistical deviation, not proof of maliciousness.",
+    "UAV marker presence does not establish enabled settings or runtime behaviour.",
+    "New boards, releases and build configurations may differ legitimately (for example, a build may compile out a feature).",
+    "Training provenance is verified for the ArduPilot releases downloaded from the official firmware server, not for every candidate sample.",
+    "Some training-constant features changed but were excluded from model scoring."
+  ],
+  "analysis_seconds": 16.124246699968353
+}
