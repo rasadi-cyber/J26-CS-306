@@ -1,0 +1,9 @@
+{
+  "name": "mavlink-reader",
+  "version": "1.0.0",
+  "description": "SkyLink Analysis Pro — MAVLink PCAP-to-CSV Forensic Converter",
+  "scripts": {
+    "start": "python main.py",
+    "test": "python test_pipeline.py"
+  }
+}
