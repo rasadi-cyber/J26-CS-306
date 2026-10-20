@@ -178,8 +178,8 @@ Before starting, install:
 Open a terminal and run:
 
 ```bash
-git clone https://github.com/DimuthuWork/UAV_mavlink-network-forensics.git
-cd UAV_mavlink-network-forensics
+git clone https://github.com/rasadi-cyber/J26-CS-306/tree/main/Mav-link.git
+cd J26-CS-306
 ```
 
 ### 2. Create a virtual environment
