@@ -332,6 +332,7 @@ class PaginatedTableWidget(QFrame):
         total_pages = self._get_total_pages()
         self.records_badge.setText(f"{total_rows:,} Records")
         self.page_info_label.setText(f"Page {self.current_page} of {total_pages}")
+        self.export_btn.setEnabled(total_rows > 0)
 
         self.btn_prev.setEnabled(self.current_page > 1)
         self.btn_first.setEnabled(self.current_page > 1)
