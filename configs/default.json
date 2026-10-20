@@ -1,0 +1,185 @@
+{
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "methods": [
+    "fedavg_clean",
+    "fedavg",
+    "multi_krum",
+    "fedwgca",
+    "fed_grab",
+    "jiang_fixed",
+    "jiang_dqn",
+    "jiang_dqn_pre",
+    "jiang_dqn_prexv"
+  ],
+  "data": {
+    "csv_path": "/Users/jeyaramsathees/Desktop/datasets/UAV-NDD CSV/UAV-Case1-Label.csv",
+    "processed_dir": "data/processed",
+    "classes": [
+      "Normal",
+      "DDoS",
+      "UDP Flooding",
+      "ICMP Flooding",
+      "DoS",
+      "De-authentication"
+    ],
+    "normal_class": "Normal",
+    "rare_class": "De-authentication",
+    "other_attacks_as": "Other attack",
+    "drop_columns": [
+      "frame.number",
+      "frame.time_relative",
+      "radiotap.channel.flags.cck",
+      "radiotap.rxflags",
+      "wlan_radio.start_tsf",
+      "wlan.rsn.capabilities.mfpc",
+      "radiotap.present.tsft",
+      "wlan_radio.frequency",
+      "wlan_radio.phy",
+      "wlan.seq",
+      "wlan.tag",
+      "ip.dst",
+      "ip.proto",
+      "ip.ttl",
+      "ip.src",
+      "udp.srcport",
+      "udp.dstport",
+      "tcp.ack"
+    ],
+    "drop_duplicates": true,
+    "test_frac": 0.2,
+    "val_frac": 0.1,
+    "public_per_class": 200,
+    "client_test_frac": 0.2,
+    "value_indicators": {
+      "top_k": 0
+    },
+    "vote_with_public": true,
+    "split": "temporal",
+    "window_sizes": [
+      10,
+      100,
+      1000
+    ],
+    "drop_capture_settings": [
+      "frame.encap_type",
+      "radiotap.datarate"
+    ],
+    "feature_set": "size_timing",
+    "split_by_capture": true,
+    "traffic": "mixed",
+    "rolling_folds": true,
+    "stream_by_capture": true,
+    "mixed": {
+      "burst": [
+        200,
+        2000
+      ],
+      "bg_ratio": [
+        0.5,
+        2.0
+      ],
+      "period_len": 10,
+      "period_share": 0.5,
+      "reuse_background": true
+    },
+    "dos_classes": [
+      "DDoS",
+      "UDP Flooding",
+      "ICMP Flooding",
+      "DoS",
+      "De-authentication"
+    ],
+    "vote_cap": 50000
+  },
+  "clients": {
+    "num_clients": 10,
+    "num_rare": 1,
+    "num_poisoned": 3,
+    "dirichlet_alpha": 1.0,
+    "min_client_samples": 1000,
+    "flip_mode": "attack_to_normal",
+    "malicious_vote": "random",
+    "malicious_vote_p": 0.5,
+    "class_floor": 0.5
+  },
+  "training": {
+    "rounds": 750,
+    "local_steps": 80,
+    "batch_size": 256,
+    "optimizer": "sgd",
+    "lr": 0.05,
+    "hidden": [
+      256,
+      128
+    ],
+    "dropout": 0.1,
+    "class_weighting": "inverse",
+    "local_loss": "ce",
+    "device": "cpu",
+    "momentum": 0.0,
+    "prox_mu": 0.0,
+    "eval_every": 10
+  },
+  "multi_krum": {
+    "K": 5,
+    "f": 3
+  },
+  "jiang": {
+    "K": 5,
+    "vote_start_frac": 0.2,
+    "vote_lag": 0,
+    "fixed_weight": null,
+    "dqn": {
+      "actions": [
+        0,
+        0.5,
+        1,
+        2,
+        6,
+        18
+      ],
+      "hidden": 64,
+      "gamma": 0.0,
+      "lr": 0.001,
+      "eps_start": 1.0,
+      "eps_end": 0.05,
+      "eps_decay_decisions": 120,
+      "batch_size": 64,
+      "buffer_size": 5000,
+      "train_steps": 16,
+      "target_sync_decisions": 25,
+      "pretrained_path": "dqn_store/pretrained.pt",
+      "pretrained_eps": 0.05,
+      "reward_mix": "vs_default",
+      "normalize_state": true,
+      "weight_accepted": false,
+      "reward_metric": "macro_f1_prior",
+      "action_scale": "fixed_multiple",
+      "readmit_positive_only": true,
+      "pretrained_frozen": true
+    },
+    "vote_margin_se": 3.0,
+    "vote_se": "cluster"
+  },
+  "fed_grab": {
+    "gating": "rank",
+    "kp": 10,
+    "ki": 0.01,
+    "kd": 0.1
+  },
+  "compute": {
+    "gpu_workers": 4,
+    "feature_dtype": "float16"
+  },
+  "fedwgca": {
+    "iqr_lambda": 1.5,
+    "quartile": 0.25,
+    "clip": 1.0
+  }
+}

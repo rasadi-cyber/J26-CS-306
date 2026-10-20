@@ -1,0 +1,11 @@
+altair==6.3.0
+numpy==2.4.6
+pandas==3.0.6
+playwright==1.63.0
+pyarrow==25.0.1
+pypdf==6.19.0
+scikit-learn==1.9.1
+scipy==1.17.1
+streamlit==1.65.0
+torch==2.14.1
+dpkt==1.9.8

@@ -1,0 +1,6 @@
+# Dashboard look (UI phase, 17 Oct): console-style accent instead of Streamlit's default red; no Deploy toolbar.
+[client]
+toolbarMode = "minimal"
+
+[theme]
+primaryColor = "#2563eb"

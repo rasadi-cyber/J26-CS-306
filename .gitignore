@@ -1,0 +1,9 @@
+.venv/
+data/
+data_cache/
+runs/
+__pycache__/
+.pytest_cache/
+.DS_Store
+*.log
+pki/
