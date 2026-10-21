@@ -1,0 +1,121 @@
+protocol,setting,fraction,feature_set,seed,row_auc,flight_auc
+flight_level_split,all,0.1,raw21,0,0.5290654547148494,0.5771019677996422
+flight_level_split,all,0.1,refined14 (exploratory),0,0.6149316553451717,0.7288014311270125
+flight_level_split,all,0.25,raw21,0,0.5783471297692371,0.5388193202146692
+flight_level_split,all,0.25,refined14 (exploratory),0,0.7278699857739246,0.7728085867620752
+flight_level_split,all,0.5,raw21,0,0.5601937464223018,0.49159212880143116
+flight_level_split,all,0.5,refined14 (exploratory),0,0.7629258718164551,0.772093023255814
+flight_level_split,all,0.75,raw21,0,0.5740314924356048,0.5484794275491951
+flight_level_split,all,0.75,refined14 (exploratory),0,0.7727149345719279,0.8093023255813954
+flight_level_split,all,1.0,raw21,0,0.5941011800127881,0.5660107334525939
+flight_level_split,all,1.0,refined14 (exploratory),0,0.7914379923452096,0.8064400715563507
+leave_one_condition_out,straight,0.1,raw21,0,0.5344798837773793,0.5169753086419753
+leave_one_condition_out,straight,0.1,refined14 (exploratory),0,0.5834306569013004,1.0
+leave_one_condition_out,straight,0.25,raw21,0,0.5534456756306569,0.6890432098765432
+leave_one_condition_out,straight,0.25,refined14 (exploratory),0,0.5781475501710822,1.0
+leave_one_condition_out,straight,0.5,raw21,0,0.5698016283686818,0.7731481481481483
+leave_one_condition_out,straight,0.5,refined14 (exploratory),0,0.6024920525600308,1.0
+leave_one_condition_out,straight,0.75,raw21,0,0.5581289352470886,0.8125
+leave_one_condition_out,straight,0.75,refined14 (exploratory),0,0.5997473458314446,1.0
+leave_one_condition_out,straight,1.0,raw21,0,0.5366899038942192,0.8086419753086419
+leave_one_condition_out,straight,1.0,refined14 (exploratory),0,0.595083245923464,1.0
+leave_one_condition_out,curved,0.1,raw21,0,0.4860333644819487,0.5077160493827161
+leave_one_condition_out,curved,0.1,refined14 (exploratory),0,0.501524164013451,0.5196759259259259
+leave_one_condition_out,curved,0.25,raw21,0,0.5056000760093697,0.537037037037037
+leave_one_condition_out,curved,0.25,refined14 (exploratory),0,0.5254786080845346,0.5952932098765432
+leave_one_condition_out,curved,0.5,raw21,0,0.49270826401815826,0.5474537037037037
+leave_one_condition_out,curved,0.5,refined14 (exploratory),0,0.5085246156455467,0.5983796296296297
+leave_one_condition_out,curved,0.75,raw21,0,0.46659884131281065,0.47800925925925924
+leave_one_condition_out,curved,0.75,refined14 (exploratory),0,0.535669372518056,0.6805555555555555
+leave_one_condition_out,curved,1.0,raw21,0,0.4593726858352724,0.45177469135802467
+leave_one_condition_out,curved,1.0,refined14 (exploratory),0,0.5448595369733443,0.847608024691358
+leave_one_condition_out,random,0.1,raw21,0,0.5118473449934544,0.49093364197530875
+leave_one_condition_out,random,0.1,refined14 (exploratory),0,0.5727818290482909,0.7768132716049382
+leave_one_condition_out,random,0.25,raw21,0,0.4484549644719624,0.40798611111111116
+leave_one_condition_out,random,0.25,refined14 (exploratory),0,0.5801536337236108,0.769483024691358
+leave_one_condition_out,random,0.5,raw21,0,0.5105216128529421,0.5775462962962963
+leave_one_condition_out,random,0.5,refined14 (exploratory),0,0.6104169116611964,0.867091049382716
+leave_one_condition_out,random,0.75,raw21,0,0.48892588846751084,0.5380015432098766
+leave_one_condition_out,random,0.75,refined14 (exploratory),0,0.6097389753487524,0.8506944444444444
+leave_one_condition_out,random,1.0,raw21,0,0.5074955297043825,0.5783179012345679
+leave_one_condition_out,random,1.0,refined14 (exploratory),0,0.619294758441843,0.851658950617284
+flight_level_split,all,0.1,raw21,1,0.4741593450362329,0.4486583184257603
+flight_level_split,all,0.1,refined14 (exploratory),1,0.6834457502555467,0.6715563506261181
+flight_level_split,all,0.25,raw21,1,0.5249762483341963,0.5166368515205725
+flight_level_split,all,0.25,refined14 (exploratory),1,0.7083537209497819,0.7352415026833632
+flight_level_split,all,0.5,raw21,1,0.5647529752325242,0.5033989266547406
+flight_level_split,all,0.5,refined14 (exploratory),1,0.7308247320841929,0.7534883720930232
+flight_level_split,all,0.75,raw21,1,0.5923749555352682,0.5742397137745975
+flight_level_split,all,0.75,refined14 (exploratory),1,0.7516458796567629,0.7846153846153847
+flight_level_split,all,1.0,raw21,1,0.5995649893144746,0.590339892665474
+flight_level_split,all,1.0,refined14 (exploratory),1,0.7501252325926644,0.7695885509838998
+leave_one_condition_out,straight,0.1,raw21,1,0.5741450710263541,0.5852623456790125
+leave_one_condition_out,straight,0.1,refined14 (exploratory),1,0.5788672602625091,0.920138888888889
+leave_one_condition_out,straight,0.25,raw21,1,0.5618303847133801,0.7808641975308642
+leave_one_condition_out,straight,0.25,refined14 (exploratory),1,0.5822975053119743,0.9992283950617283
+leave_one_condition_out,straight,0.5,raw21,1,0.577203839946363,0.8209876543209876
+leave_one_condition_out,straight,0.5,refined14 (exploratory),1,0.5930340057920798,1.0
+leave_one_condition_out,straight,0.75,raw21,1,0.5696783323297346,0.8070987654320988
+leave_one_condition_out,straight,0.75,refined14 (exploratory),1,0.5805346289498491,1.0
+leave_one_condition_out,straight,1.0,raw21,1,0.5366899038942192,0.8086419753086419
+leave_one_condition_out,straight,1.0,refined14 (exploratory),1,0.595083245923464,1.0
+leave_one_condition_out,curved,0.1,raw21,1,0.48792333840536584,0.459104938271605
+leave_one_condition_out,curved,0.1,refined14 (exploratory),1,0.540698258544135,0.6427469135802469
+leave_one_condition_out,curved,0.25,raw21,1,0.47263440180314664,0.4911265432098766
+leave_one_condition_out,curved,0.25,refined14 (exploratory),1,0.5356538202085892,0.6388888888888888
+leave_one_condition_out,curved,0.5,raw21,1,0.4528362761780493,0.4575617283950617
+leave_one_condition_out,curved,0.5,refined14 (exploratory),1,0.5345596610745895,0.621141975308642
+leave_one_condition_out,curved,0.75,raw21,1,0.4579454974379427,0.45370370370370366
+leave_one_condition_out,curved,0.75,refined14 (exploratory),1,0.5401037256456355,0.7993827160493828
+leave_one_condition_out,curved,1.0,raw21,1,0.4593726858352724,0.45177469135802467
+leave_one_condition_out,curved,1.0,refined14 (exploratory),1,0.5448595369733443,0.847608024691358
+leave_one_condition_out,random,0.1,raw21,1,0.503425608222964,0.4998070987654321
+leave_one_condition_out,random,0.1,refined14 (exploratory),1,0.55377904727299,0.6415895061728396
+leave_one_condition_out,random,0.25,raw21,1,0.42034737760837226,0.43904320987654327
+leave_one_condition_out,random,0.25,refined14 (exploratory),1,0.5748346170246593,0.75
+leave_one_condition_out,random,0.5,raw21,1,0.4662096549337261,0.5345293209876544
+leave_one_condition_out,random,0.5,refined14 (exploratory),1,0.6041552870666795,0.8198302469135802
+leave_one_condition_out,random,0.75,raw21,1,0.5050355355043928,0.6145833333333334
+leave_one_condition_out,random,0.75,refined14 (exploratory),1,0.6163891793791653,0.82445987654321
+leave_one_condition_out,random,1.0,raw21,1,0.5074955297043825,0.5783179012345679
+leave_one_condition_out,random,1.0,refined14 (exploratory),1,0.619294758441843,0.851658950617284
+flight_level_split,all,0.1,raw21,2,0.4963210184847867,0.5180679785330948
+flight_level_split,all,0.1,refined14 (exploratory),2,0.6272660424678714,0.6926654740608229
+flight_level_split,all,0.25,raw21,2,0.5782453759496322,0.5556350626118068
+flight_level_split,all,0.25,refined14 (exploratory),2,0.7217864264425459,0.7341681574239713
+flight_level_split,all,0.5,raw21,2,0.5801854718063473,0.5960644007155635
+flight_level_split,all,0.5,refined14 (exploratory),2,0.7645278817001767,0.7742397137745975
+flight_level_split,all,0.75,raw21,2,0.6081944356551114,0.6261180679785331
+flight_level_split,all,0.75,refined14 (exploratory),2,0.7904997465775397,0.8268336314847943
+flight_level_split,all,1.0,raw21,2,0.6302356907035622,0.6332737030411449
+flight_level_split,all,1.0,refined14 (exploratory),2,0.7978913102217916,0.8347048300536672
+leave_one_condition_out,straight,0.1,raw21,2,0.4750718227286195,0.5258487654320988
+leave_one_condition_out,straight,0.1,refined14 (exploratory),2,0.6071973405395543,0.9988425925925926
+leave_one_condition_out,straight,0.25,raw21,2,0.573870513588348,0.7044753086419753
+leave_one_condition_out,straight,0.25,refined14 (exploratory),2,0.587237206067653,0.9621913580246914
+leave_one_condition_out,straight,0.5,raw21,2,0.5620759490595457,0.7831790123456791
+leave_one_condition_out,straight,0.5,refined14 (exploratory),2,0.615405593736768,0.9795524691358024
+leave_one_condition_out,straight,0.75,raw21,2,0.5769838760633726,0.7727623456790124
+leave_one_condition_out,straight,0.75,refined14 (exploratory),2,0.6131534865409838,1.0
+leave_one_condition_out,straight,1.0,raw21,2,0.5366899038942192,0.8086419753086419
+leave_one_condition_out,straight,1.0,refined14 (exploratory),2,0.595083245923464,1.0
+leave_one_condition_out,curved,0.1,raw21,2,0.45756110810698286,0.45601851851851855
+leave_one_condition_out,curved,0.1,refined14 (exploratory),2,0.4842963445952494,0.48263888888888884
+leave_one_condition_out,curved,0.25,raw21,2,0.4565063017515645,0.4888117283950617
+leave_one_condition_out,curved,0.25,refined14 (exploratory),2,0.5380209511400218,0.6130401234567902
+leave_one_condition_out,curved,0.5,raw21,2,0.46583042948822945,0.47260802469135804
+leave_one_condition_out,curved,0.5,refined14 (exploratory),2,0.5215578761723578,0.6520061728395062
+leave_one_condition_out,curved,0.75,raw21,2,0.46223192963491927,0.4417438271604938
+leave_one_condition_out,curved,0.75,refined14 (exploratory),2,0.5423839292113227,0.7658179012345679
+leave_one_condition_out,curved,1.0,raw21,2,0.4593726858352724,0.45177469135802467
+leave_one_condition_out,curved,1.0,refined14 (exploratory),2,0.5448595369733443,0.847608024691358
+leave_one_condition_out,random,0.1,raw21,2,0.43645680138836607,0.42534722222222227
+leave_one_condition_out,random,0.1,refined14 (exploratory),2,0.6089753045437856,0.8547453703703703
+leave_one_condition_out,random,0.25,raw21,2,0.448083939470206,0.39043209876543206
+leave_one_condition_out,random,0.25,refined14 (exploratory),2,0.5907363440086507,0.8391203703703703
+leave_one_condition_out,random,0.5,raw21,2,0.5128779860915458,0.5814043209876544
+leave_one_condition_out,random,0.5,refined14 (exploratory),2,0.6186630215800288,0.8464506172839505
+leave_one_condition_out,random,0.75,raw21,2,0.5121067501204175,0.6099537037037037
+leave_one_condition_out,random,0.75,refined14 (exploratory),2,0.622028186996607,0.8645833333333334
+leave_one_condition_out,random,1.0,raw21,2,0.5074955297043825,0.5783179012345679
+leave_one_condition_out,random,1.0,refined14 (exploratory),2,0.619294758441843,0.851658950617284

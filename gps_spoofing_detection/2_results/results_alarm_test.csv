@@ -1,0 +1,13 @@
+model,plan,held_out,features,threshold,flight_auc,attacked_caught_TPR,false_alarm_FPR,balanced_acc
+RandomForest,nested_choice,straight,A_plus_physics,0.71,1.0,0.0,0.0,0.5
+RandomForest,nested_choice,curved,motion_plus_physics,0.05,0.722,1.0,1.0,0.5
+RandomForest,nested_choice,random,A_plus_physics,0.63,0.796,1.0,0.875,0.562
+RandomForest,B_refined14_exploratory,straight,B_refined14,0.3,1.0,0.014,0.0,0.507
+RandomForest,B_refined14_exploratory,curved,B_refined14,0.06,0.93,1.0,1.0,0.5
+RandomForest,B_refined14_exploratory,random,B_refined14,0.84,0.898,0.0,0.0,0.5
+XGBoost,nested_choice,straight,A_plus_physics,0.93,1.0,0.0,0.0,0.5
+XGBoost,nested_choice,curved,motion_plus_physics,0.02,0.727,1.0,1.0,0.5
+XGBoost,nested_choice,random,A_plus_physics,0.78,0.679,0.444,0.181,0.632
+XGBoost,B_refined14_exploratory,straight,B_refined14,0.26,1.0,0.014,0.0,0.507
+XGBoost,B_refined14_exploratory,curved,B_refined14,0.02,0.83,1.0,1.0,0.5
+XGBoost,B_refined14_exploratory,random,B_refined14,0.79,0.841,0.278,0.069,0.604

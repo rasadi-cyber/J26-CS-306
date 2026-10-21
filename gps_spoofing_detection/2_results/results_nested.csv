@@ -1,0 +1,4 @@
+held_out,chosen,outer_row_auc,outer_flight_auc
+straight,A_plus_physics,0.5745947133532683,1.0
+curved,motion_plus_physics,0.5310064662637519,0.7268518518518519
+random,A_plus_physics,0.5695985653205546,0.6786265432098766

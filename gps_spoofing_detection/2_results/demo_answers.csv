@@ -1,0 +1,13 @@
+file,condition,actual,detected,score,threshold,correct
+demo_straight_01.csv,straight,GPS spoofing,GPS spoofing,0.5977,0.5518,True
+demo_straight_02.csv,straight,GPS spoofing,GPS spoofing,0.7157,0.5518,True
+demo_straight_03.csv,straight,Normal flight,Normal flight,0.2075,0.5518,True
+demo_straight_04.csv,straight,Normal flight,Normal flight,0.4386,0.5518,True
+demo_curved_05.csv,curved,GPS spoofing,GPS spoofing,0.7562,0.7129,True
+demo_curved_06.csv,curved,GPS spoofing,Normal flight,0.6539,0.7129,False
+demo_curved_07.csv,curved,Normal flight,Normal flight,0.6671,0.7129,True
+demo_curved_08.csv,curved,Normal flight,Normal flight,0.6423,0.7129,True
+demo_random_09.csv,random,GPS spoofing,Normal flight,0.341,0.3698,False
+demo_random_10.csv,random,GPS spoofing,GPS spoofing,0.4099,0.3698,True
+demo_random_11.csv,random,Normal flight,Normal flight,0.3394,0.3698,True
+demo_random_12.csv,random,Normal flight,Normal flight,0.3487,0.3698,True
