@@ -9,9 +9,16 @@ performance drops on a flight type the models were not trained on.
 - Whole-flight detection with multi-window features judged 83% of flights correctly on known flight types (guessing = 60%), but only about 0.67 balanced accuracy on an unseen flight type (guessing = 0.50). Both use exploratory features.
 - Random Forest and XGBoost performed almost the same.
 
+## Folder layout
+- `1_code/` Python scripts, the demo app and `requirements.txt`
+- `2_results/` result tables (CSV), the JSON output and charts produced by the scripts
+
+The scripts save their outputs in the folder they are run from. The files in `2_results/` are the outputs from the author's own runs.
+Run the scripts from inside `1_code/`, with the dataset folder `Merged/` placed in `1_code/`.
+
 ## Quick start
 1. Install packages: `python -m pip install -r requirements.txt`
-2. Download the Merged folder from https://github.com/anthony-finn/UAV-GPS-Spoofing-Dataset and place it here as `Merged/`.
+2. Download the Merged folder from https://github.com/anthony-finn/UAV-GPS-Spoofing-Dataset and place it inside `1_code/` as `Merged/`.
 3. Run `step3.py` (builds `combined.pkl`), then the experiment scripts below.
 
 | Script | Purpose |
@@ -25,7 +32,7 @@ performance drops on a flight type the models were not trained on.
 | step21.py, step22.py | Multi-window features on known and unseen flight types |
 | gps_common.py | Shared feature code and `analyze_flight()` |
 
-(Other step files are data checks, extra experiments and charts.)
+Other step files are data checks, extra experiments and charts.
 
 ## Limitations
 - All data are simulated (PX4 SITL), so real-flight performance is unknown.
@@ -33,11 +40,12 @@ performance drops on a flight type the models were not trained on.
 - Refined and multi-window features were designed after seeing results, so they are exploratory.
 - Reasons for missed attacked flights were not identified.
 - A model score is an indicator to investigate, not proof of an attack.
+- The dataset files and trained model files (`.pkl`) are not uploaded. Scripts `step3.py`, `step14.py` and `step16.py` recreate them.
 
 ## Output for the system
 `gps_spoofing_results.json` holds one record per flight (condition, detected event, confidence score, threshold, evidence) plus a reliability note. Field names are still to be agreed with the other components.
 
 ## Author
-Rasadi W.A.P(IT23331822) 
+Rasadi W.A.P(IT23331822)
 B.Sc. (Hons) in Information Technology (Cyber Security), SLIIT.
-Parts of the code and documentation were developed.
+Parts of the code and documentation were developed AI assistance, the author ran the scripts and checked the outputs
