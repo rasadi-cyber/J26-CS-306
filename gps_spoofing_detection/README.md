@@ -38,5 +38,6 @@ performance drops on a flight type the models were not trained on.
 `gps_spoofing_results.json` holds one record per flight (condition, detected event, confidence score, threshold, evidence) plus a reliability note. Field names are still to be agreed with the other components.
 
 ## Author
-Rasadi W.A.P, IT23331822, B.Sc. (Hons) in Information Technology (Cyber Security), SLIIT.
-Parts of the code and documentation were developed with AI assistance; the author ran the scripts and checked the outputs.
+Rasadi W.A.P(IT23331822) 
+B.Sc. (Hons) in Information Technology (Cyber Security), SLIIT.
+Parts of the code and documentation were developed.
